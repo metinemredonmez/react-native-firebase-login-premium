@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
@@ -7,6 +7,7 @@ import SignupScreen from './screens/SignupScreen';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
 import HomeScreen from './screens/HomeScreen';
 import { useContext } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ function NormalStack() {
 }
 
 function AfterAuthenticatedStack() {
+  const authContext = useContext(AuthContext);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -59,6 +61,14 @@ function AfterAuthenticatedStack() {
         component={HomeScreen}
         options={{
           headerTitle: 'Anasayfa',
+          headerRight: ({ tintColor }) => (
+            <Pressable
+              style={({ pressed }) => pressed && styles.pressed}
+              onPress={authContext.logout}
+            >
+              <Ionicons name="exit" size={24} color={tintColor} />
+            </Pressable>
+          ),
         }}
       />
     </Stack.Navigator>
@@ -83,4 +93,8 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  pressed: {
+    opacity: 0.5,
+  },
+});
